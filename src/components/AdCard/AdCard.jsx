@@ -27,7 +27,7 @@ export const AdCard = ({ ads }) => {
 
   const handleDecision = (e) => {
     switch (e.keyCode) {
-      case 32: // Space
+      case 32: // Space - одобрить
         e.preventDefault();
         if (!completedAds.some((el) => el.ad === selectedAd.id)) {
           setCompletedAds([
@@ -44,17 +44,8 @@ export const AdCard = ({ ads }) => {
           ads.find((el, index) => el && index === focusedItemIndex)
         );
         break;
-      case 38: // Клавиша вверх
-        console.log("UP");
-        break;
-      case 39: // Клавиша вправо
-        console.log("RIGHT");
-        break;
-      case 40: // Клавиша вниз
-        console.log("DOWN");
-        break;
       default:
-        console.log("OLOLO");
+        console.log("Default case");
     }
   };
 
