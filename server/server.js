@@ -1,11 +1,11 @@
-const { faker } = require("@faker-js/faker");
+// const { faker } = require("@faker-js/faker");
 
-const express = require("express"); //Line 1
+const express = require("express");
 const fs = require("fs");
-const app = express(); //Line 2
-const port = process.env.PORT || 8080; //Line 3
+const app = express();
+const port = process.env.PORT || 8080;
 
-// // Создал json с данными объявлений
+// Создал json с данными объявлений
 // const data = [];
 //
 // for (let i = 0; i < 50; i++) {
@@ -22,15 +22,13 @@ const port = process.env.PORT || 8080; //Line 3
 //     ownerId: i + +(Math.random() * 37653).toFixed(0),
 //     ownerLogin: faker.name.findName(),
 //     bulletinSubject: `Объявление №${i + 1} ${faker.lorem.words(3)}`,
-//     bulletinText: `<h3>${faker.lorem.words(
-//       Math.random() * 5
-//     )}(${faker.lorem.word()})</h3><p>${faker.lorem.paragraphs(
-//       Math.random() * 3
+//     bulletinText: `<p>${faker.lorem.paragraphs(
+//       Math.random() * 2
 //     )}</p><ul><li>${faker.lorem.lines(1)}</li><li>${faker.lorem.lines(
 //       1
 //     )}</li><li>${faker.lorem.lines(1)}</li></ul><p>${faker.lorem.paragraphs(
-//       Math.random() * 3
-//     )}</p>`, // string
+//       Math.random() * 2
+//     )}</p>`,
 //     bulletinImages: [
 //       "https://static.baza.farpost.ru/v/1510541224458_hugeBlock",
 //     ],
@@ -40,13 +38,7 @@ const port = process.env.PORT || 8080; //Line 3
 //   console.log("Записали");
 // });
 
-// This displays message that the server running and listening to specified port
 app.listen(port, () => console.log(`Listening on port ${port}`)); //Line 6
-
-app.get("/express_backend", (req, res) => {
-  //Line 9
-  res.send({ express: "YOUR EXPRESS BACKEND IS CONNECTED TO REACT" }); //Line 10
-});
 
 app.get("/get_data", (req, res) => {
   const page = parseInt(req.query.page);
@@ -55,9 +47,9 @@ app.get("/get_data", (req, res) => {
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
   fs.readFile("data/dataList.json", "utf8", (err, data) => {
-    const taskList = JSON.parse(data);
+    const adList = JSON.parse(data);
     const results = {};
-    if (endIndex < taskList.length) {
+    if (endIndex < adList.length) {
       results.next = {
         page: page + 1,
         limit: limit,
@@ -71,7 +63,7 @@ app.get("/get_data", (req, res) => {
       };
     }
 
-    results.body = taskList.slice(startIndex, endIndex);
+    results.body = adList.slice(startIndex, endIndex);
 
     res.send(results);
   });
