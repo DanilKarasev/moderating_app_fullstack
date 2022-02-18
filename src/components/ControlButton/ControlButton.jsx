@@ -3,7 +3,26 @@
 import React from "react";
 import { css, jsx } from "@emotion/react";
 
-export const ControlButton = ({ command, commandText, color, hotKey }) => {
+export const ControlButton = ({
+  action,
+  commandText,
+  color,
+  hotKey,
+  dispatch,
+  command,
+  state,
+  disabled,
+}) => {
+  const handleClick = () => {
+    dispatch({ type: action });
+    dispatch({
+      type: "selectAd",
+      payload:
+        state.selectedAdIndex === state.adsList.length - 1
+          ? state.adsList.length - 1
+          : state.selectedAdIndex + 1,
+    });
+  };
   return (
     <button
       css={css`
@@ -22,8 +41,17 @@ export const ControlButton = ({ command, commandText, color, hotKey }) => {
           background-color: #5daaff;
           color: white;
         }
+        &:disabled {
+          color: #c3c3c3;
+          cursor: inherit;
+        }
+        &:disabled:hover {
+          background-color: transparent;
+          color: #c3c3c3;
+        }
       `}
-      onClick={command}
+      disabled={!!disabled}
+      onClick={command ? command : () => handleClick()}
     >
       <p
         css={css`

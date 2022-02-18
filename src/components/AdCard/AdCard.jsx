@@ -1,6 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { css, jsx } from "@emotion/react";
 import { Markup } from "interweave";
 import userImage from "./user.png";
@@ -10,58 +10,68 @@ import {
   CardBody,
   CardHeader,
   CardContent,
+  Dummy,
 } from "./styledElements";
+import { Decision } from "../Decision";
 
-export const AdCard = ({ ads }) => {
-  //Первый стейт просто индекс выбранного елемента, можно в дальнейшем сократить его
-  const [focusedItemIndex, setFocusedItemIndex] = useState(0);
-  const [selectedAd, setSelectedAd] = useState(ads[focusedItemIndex]);
-  //Массив завершенных объявлений
-  const [completedAds, setCompletedAds] = useState([]);
+export const AdCard = ({
+  state,
+  dispatch,
+  sendData,
+  declineAd,
+  escalateAd,
+  modalIsOpen,
+}) => {
+  //Добавляем первый элемент в стейт при mount'e
+  useEffect(() => {
+    dispatch({ type: "selectAd", payload: 0 });
+  }, [state.adsList]);
 
-  //Выбор елемента по клику
-  const handleSelectAd = (index) => {
-    setFocusedItemIndex(index);
-    setSelectedAd(ads.find((el, index) => el && index === focusedItemIndex));
-  };
-
-  const handleDecision = (e) => {
-    switch (e.keyCode) {
-      case 32: // Space - одобрить
-        e.preventDefault();
-        if (!completedAds.some((el) => el.ad === selectedAd.id)) {
-          setCompletedAds([
-            ...completedAds,
-            {
-              ad: selectedAd.id,
-              decision: "approved",
-              comments: "",
-            },
-          ]);
-        }
-        setFocusedItemIndex(focusedItemIndex + 1);
-        setSelectedAd(
-          ads.find((el, index) => el && index === focusedItemIndex)
-        );
-        break;
-      default:
-        console.log("Default case");
+  const handleDecision = (event) => {
+    if (event.code === "Space") {
+      event.preventDefault();
+      dispatch({ type: "approveAd" });
+      dispatch({
+        type: "selectAd",
+        payload:
+          state.selectedAdIndex === state.adsList.length - 1
+            ? state.adsList.length - 1
+            : state.selectedAdIndex + 1,
+      });
+    }
+    if (event.code === "Delete") {
+      event.preventDefault();
+      declineAd();
+    }
+    if (event.code === "Enter" && event.shiftKey) {
+      event.preventDefault();
+      escalateAd();
+    }
+    if (event.code === "F7") {
+      event.preventDefault();
+      sendData();
     }
   };
 
   useEffect(() => {
-    window.addEventListener("keydown", handleDecision);
+    if (!modalIsOpen) {
+      window.addEventListener("keydown", handleDecision);
+    }
     return () => {
       window.removeEventListener("keydown", handleDecision);
     };
   });
 
-  console.log("Completed :", completedAds);
-  console.log("Selected :", selectedAd);
+  //Выбор элемента по клику
+  const handleSelectAd = (index) => {
+    return () => {
+      dispatch({ type: "selectAd", payload: index });
+    };
+  };
 
   return (
     <>
-      {ads.map(
+      {state.adsList.map(
         (
           {
             id,
@@ -74,11 +84,11 @@ export const AdCard = ({ ads }) => {
           index
         ) => (
           <AdItem
-            onClick={() => handleSelectAd(index)}
+            onClick={handleSelectAd(index)}
             key={id}
             id={id}
             css={
-              focusedItemIndex === index
+              state.selectedAdIndex === index
                 ? css`
                     filter: brightness(100%);
                     border: 1px solid #5daaff;
@@ -134,7 +144,7 @@ export const AdCard = ({ ads }) => {
                     padding-right: 16px;
                     border-right: 1px solid #e4e4e4;
                     max-width: 792px;
-                    min-height: 390px;
+                    min-height: 374px;
                     li {
                       list-style-type: "- ";
                       list-style-position: inside;
@@ -152,6 +162,11 @@ export const AdCard = ({ ads }) => {
                 </CardImages>
               </CardContent>
             </CardBody>
+            {state.checkedAds.some((el) => el.id === id) ? (
+              <Decision id={id} state={state} />
+            ) : (
+              <Dummy />
+            )}
           </AdItem>
         )
       )}

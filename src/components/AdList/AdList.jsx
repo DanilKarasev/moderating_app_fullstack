@@ -1,7 +1,14 @@
 import { AdCard } from "../AdCard";
 import styled from "@emotion/styled";
 
-export const AdList = ({ adList }) => {
+export const AdList = ({
+  state,
+  dispatch,
+  sendData,
+  escalateAd,
+  declineAd,
+  modalIsOpen,
+}) => {
   const Wrapper = styled.div`
     align-items: center;
     justify-content: center;
@@ -9,19 +16,28 @@ export const AdList = ({ adList }) => {
     flex-direction: column;
   `;
 
-  if (!adList) {
+  if (state.adsList.length === 0 && !state.allAdsCompleted) {
     return (
       <Wrapper>
         <div>Press Enter to load ads...</div>
       </Wrapper>
     );
   }
-  if (!adList.body.length) {
+  if (state.allAdsCompleted) {
     return (
       <Wrapper>
         <div>All tasks completed!</div>
       </Wrapper>
     );
   }
-  return <AdCard ads={adList.body} />;
+  return (
+    <AdCard
+      sendData={sendData}
+      state={state}
+      dispatch={dispatch}
+      escalateAd={escalateAd}
+      declineAd={declineAd}
+      modalIsOpen={modalIsOpen}
+    />
+  );
 };
