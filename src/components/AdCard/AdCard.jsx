@@ -1,6 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { css, jsx } from "@emotion/react";
 import { Markup } from "interweave";
 import userImage from "./user.png";
