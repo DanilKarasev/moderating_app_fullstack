@@ -1,6 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { css, jsx } from "@emotion/react";
 import { Markup } from "interweave";
 import userImage from "./user.png";
@@ -26,7 +26,8 @@ export const AdCard = ({
   useEffect(() => {
     dispatch({ type: "selectAd", payload: 0 });
   }, [state.adsList]);
-
+  //------------------------------------------------------------------------------
+  //Key listener
   const handleDecision = (event) => {
     if (event.code === "Space") {
       event.preventDefault();
@@ -52,7 +53,6 @@ export const AdCard = ({
       sendData();
     }
   };
-
   useEffect(() => {
     if (!modalIsOpen) {
       window.addEventListener("keydown", handleDecision);
@@ -61,7 +61,16 @@ export const AdCard = ({
       window.removeEventListener("keydown", handleDecision);
     };
   });
-
+  //------------------------------------------------------------------------------
+  //Autofocus
+  const itemsRef = useRef([]);
+  useEffect(() => {
+    itemsRef.current[state.selectedAdIndex].scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, [state.selectedAdIndex]);
+  //------------------------------------------------------------------------------
   //Выбор элемента по клику
   const handleSelectAd = (index) => {
     return () => {
@@ -87,6 +96,7 @@ export const AdCard = ({
             onClick={handleSelectAd(index)}
             key={id}
             id={id}
+            ref={(el) => (itemsRef.current[index] = el)}
             css={
               state.selectedAdIndex === index
                 ? css`
