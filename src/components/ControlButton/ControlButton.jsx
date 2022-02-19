@@ -13,6 +13,7 @@ export const ControlButton = ({
   state,
   disabled,
 }) => {
+  //Если в пропсах есть command(функция), то по клику сразу выполняем ее, иначе переходим к handleClick
   const handleClick = () => {
     dispatch({ type: action });
     dispatch({

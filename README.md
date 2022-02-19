@@ -1,65 +1,65 @@
 # Тестовое задания для портала vl.ru
+Данное приложение имитирует интерфейс модерации объявлений пользователей. 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+##Менеджмент каталога объявлений:
+Заходим в директорию `/server`. 
 
-## Порядок запуска
+В `createDataList.js` находится функция, создающая объявления. \
+Количество объявлений по умолчанию:  `50`. \
+Чтобы изменить количество объявлений необходимо изменить значение `addsQuantity` на желаемое. 
 
-Заходим в server, запускаем локальный сервер:
+Для создания каталога объявлений запускаем команду:
+### `node createDataList`
 
-### `node server`
+\
+Проверенные объявления записываются в `data/completedList.json` \
+По умолчанию в `completedList.json` должен находиться `ПУСТОЙ МАССИВ`
 
-Затем из корневой директории запускаем проект
+На сервере присутвует символическая проверка, поэтому если количество объявлений в `dataList.json` === количеству объявлений в `completedList.json`, то данные отправлятся не будут, имитируя полностью выполненую задачу.
+
+Чтобы вновь восстановить функционал приложения просто оставьте в `completedList.json` пустой массив.
+
+
+## Запуск локального сервера:
+
+Чтобы запустить локальный сервер необходимо из дериктории `/server` выполнить команду:
+
+### `node start`
+
+По умолчанию запускается на http://localhost:8080 \
+Если требуется изменить порт, отредактируйте параметр `"proxy"` в `package.json`
+
+## Доступные команды в приложении:
+
+В корневой папке проекта доступны следующие команды: 
 
 ### `npm start`
 
-После нажимаем на любую кнопку 
+Запуск приложения в режиме разработки. \
+По умолчанию открывается на http://localhost:3000
 
 ### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Создает оптимизированную сборку приложения для дальнейшего деплоя.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Дополнительно установленные библиотеки:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### `faker`
 
-### `npm run eject`
+Библиотека для создания фейковых данных. Используется в `createDataList.js` 
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### `body-parser`
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Миддлвара для Node.js. 
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### `@emotion`
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Библиотека для написания стилей на js.
 
-## Learn More
+### `react-modal`
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Небольшая библиотека с встроенной логикой модальных окон.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### `react-toastify`
 
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Отличная библиотека для всплывающих уведомлений. Не нужно заморачиваться чисткой таймаутов и прочими рутинными вещами :)

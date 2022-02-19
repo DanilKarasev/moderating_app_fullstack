@@ -1,5 +1,6 @@
 import { AdCard } from "../AdCard";
 import styled from "@emotion/styled";
+import { Loader } from "../Loader";
 
 export const AdList = ({
   state,
@@ -16,6 +17,9 @@ export const AdList = ({
     flex-direction: column;
   `;
 
+  if (state.loading) {
+    return <Loader />;
+  }
   if (state.adsList.length === 0 && !state.allAdsCompleted) {
     return (
       <Wrapper>

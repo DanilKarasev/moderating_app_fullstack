@@ -5,16 +5,13 @@ import { AdList } from "../../components/AdList";
 import { css, jsx } from "@emotion/react";
 import { Container, ControlPanel, CardWrapper } from "./StyledElements";
 import { ControlButton } from "../../components/ControlButton";
-import Modal from "react-modal";
-import {
-  ModalButton,
-  ModalInput,
-  modalStyle,
-} from "../../components/AdCard/styledElements";
-Modal.setAppElement("#root");
+import { ModalComponent } from "../../components/Modal";
+import { ToastContainer as Notification, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 //Раз redux не желателен, попробуем useReducer)
 const initialState = {
+  loading: false,
   allAdsCompleted: false,
   readyToSend: false,
   adsList: [],
@@ -28,6 +25,7 @@ function reducer(state, action) {
     case "loadAdsList":
       return {
         ...state,
+        loading: false,
         adsList: action.payload.body,
         nextAdList: action.payload.next,
         allAdsCompleted: action.payload.allAdsCompleted,
@@ -90,6 +88,7 @@ function reducer(state, action) {
     case "dataIsSend":
       return {
         ...state,
+        loading: true,
         readyToSend: false,
         checkedAds: [],
         selectedAdIndex: 0,
@@ -101,10 +100,9 @@ function reducer(state, action) {
 
 function Main() {
   const [state, dispatch] = useReducer(reducer, initialState);
-  console.log(state);
-  //Если с сервера больше не приходят данные(страницы кончились) - возвращаем заглушку
   const getAds = async (page = 1) => {
-    const response = await fetch(`/get_data?page=${page}&limit=10`);
+    const adsPerPage = 10;
+    const response = await fetch(`/get_data?page=${page}&limit=${adsPerPage}`);
     const body = await response.json();
     if (response.status !== 200) {
       throw Error(body.message);
@@ -126,23 +124,19 @@ function Main() {
   };
   //------------------------------------------------------------------------------------------
   //Загрузка данных
-  //Если все данные с сервера проверены - все задачи выполнены
   const loadData = () => {
-    if (state.allAdsCompleted) {
-      console.log("ALL DONE"); //СДЕЛАТЬ ПОП-АП!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    } else
-      getAds(state.nextAdList.page).then((adsData) =>
-        dispatch({ type: "loadAdsList", payload: adsData })
-      );
+    getAds(state.nextAdList.page).then((adsData) =>
+      dispatch({ type: "loadAdsList", payload: adsData })
+    );
   };
   //Отправка данных
-  //Если длины массивов не равны, не отправляем данные
   const sendData = () => {
     if (!state.readyToSend) {
-      console.log("Not all tasks are proceeded"); //СДЕЛАТЬ ПОП-АП!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      toggleNotification("notReadyToSend");
     } else {
       sendAds(state.checkedAds)
         .then(() => dispatch({ type: "dataIsSend" }))
+        .then(() => toggleNotification("adsAreSent"))
         .then(() => loadData());
     }
   };
@@ -165,22 +159,53 @@ function Main() {
     };
   }, []);
   //------------------------------------------------------------------------------------------
-  //Если длина массива задач === длине массива выполненных задач и не равно нулю - диспатчим экшен что все готово к отправке
+  //Если длина массива задач === длине массива выполненных задач и не равно нулю - диспатчим экшен что все готово к отправке и уведомляем
   useEffect(() => {
     if (
       state.adsList.length === state.checkedAds.length &&
       state.checkedAds.length !== 0
     ) {
       dispatch({ type: "readyToSend" });
+      toggleNotification("readyToSend");
     }
   }, [state.checkedAds.length]);
   //------------------------------------------------------------------------
-  //Modals
-  //Конечно нужно сделать 1 компонент по человечески
-  const [commentary, setCommentary] = useState("");
-  const handleChange = (event) => {
-    setCommentary(event.target.value);
+  //Notification
+  const toggleNotification = (props) => {
+    switch (props) {
+      case "readyToSend":
+        toast.info("Ads are ready to send!", {
+          position: toast.POSITION.BOTTOM_RIGHT,
+          autoClose: 1500,
+          hideProgressBar: true,
+          toastId: "ready-to-send-ads",
+        });
+        break;
+      case "notReadyToSend":
+        toast.warn("Not all ads have been verified", {
+          position: toast.POSITION.BOTTOM_RIGHT,
+          autoClose: 1500,
+          hideProgressBar: true,
+          toastId: "not-ready-to-send-ads",
+        });
+        break;
+      case "adsAreSent":
+        toast.success("Ads have been successfully sent!", {
+          position: toast.POSITION.BOTTOM_RIGHT,
+          autoClose: 1500,
+          hideProgressBar: true,
+          toastId: "successfully-sent-ads",
+        });
+        break;
+    }
   };
+  //------------------------------------------------------------------------
+  //Modals
+  const [comment, setComment] = useState("");
+  const handleChangeComment = (event) => {
+    setComment(event.target.value);
+  };
+  //------------------------------------------------------------------------
   //Модалка для "Отклонить"-------------------------------------------------
   const [declineModalIsOpen, setDeclineModalIsOpen] = useState(false);
   const handleOpenDeclineModal = () => {
@@ -192,8 +217,8 @@ function Main() {
 
   const declineAd = (e) => {
     e.preventDefault();
-    dispatch({ type: "declineAd", payload: commentary });
-    setCommentary("");
+    dispatch({ type: "declineAd", payload: comment });
+    setComment("");
     dispatch({
       type: "selectAd",
       payload:
@@ -214,8 +239,8 @@ function Main() {
 
   const escalateAd = (e) => {
     e.preventDefault();
-    dispatch({ type: "escalateAd", payload: commentary });
-    setCommentary("");
+    dispatch({ type: "escalateAd", payload: comment });
+    setComment("");
     dispatch({
       type: "selectAd",
       payload:
@@ -228,85 +253,20 @@ function Main() {
 
   return (
     <Container>
-      <Modal
-        isOpen={declineModalIsOpen}
-        onRequestClose={handleCloseDeclineModal}
-        style={modalStyle}
-      >
-        <h4
-          css={css`
-            margin-bottom: 20px;
-          `}
-        >
-          Пожалуйста, оставьте комментарий
-        </h4>
-        <form onSubmit={declineAd}>
-          <ModalInput
-            required
-            maxLength={60}
-            type="text"
-            onChange={handleChange}
-            value={commentary}
-            autoFocus={true}
-          />
-          <div
-            css={css`
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              margin-top: 10px;
-            `}
-          >
-            <ModalButton
-              type={"button"}
-              close
-              onClick={handleCloseDeclineModal}
-            >
-              Close
-            </ModalButton>
-            <ModalButton type={"submit"}>Add</ModalButton>
-          </div>
-        </form>
-      </Modal>
-      <Modal
-        isOpen={escalateModalIsOpen}
-        onRequestClose={handleCloseEscalateModal}
-        style={modalStyle}
-      >
-        <h4
-          css={css`
-            margin-bottom: 20px;
-          `}
-        >
-          Укажите причину эскалации
-        </h4>
-        <form onSubmit={escalateAd}>
-          <ModalInput
-            maxLength={60}
-            type="text"
-            onChange={handleChange}
-            value={commentary}
-            autoFocus={true}
-          />
-          <div
-            css={css`
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              margin-top: 10px;
-            `}
-          >
-            <ModalButton
-              type={"button"}
-              close
-              onClick={handleCloseEscalateModal}
-            >
-              Close
-            </ModalButton>
-            <ModalButton type={"submit"}>Add</ModalButton>
-          </div>
-        </form>
-      </Modal>
+      <ModalComponent
+        open={declineModalIsOpen}
+        close={handleCloseDeclineModal}
+        action={declineAd}
+        handleChangeComment={handleChangeComment}
+        inputValue={comment}
+      />
+      <ModalComponent
+        open={escalateModalIsOpen}
+        close={handleCloseEscalateModal}
+        action={escalateAd}
+        handleChangeComment={handleChangeComment}
+        inputValue={comment}
+      />
       <CardWrapper>
         <AdList
           sendData={sendData}
@@ -352,6 +312,7 @@ function Main() {
           />
         </div>
       </ControlPanel>
+      <Notification />
     </Container>
   );
 }
