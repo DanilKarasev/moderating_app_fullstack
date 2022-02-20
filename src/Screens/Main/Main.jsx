@@ -98,7 +98,7 @@ function reducer(state, action) {
   }
 }
 
-function Main() {
+export const Main = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const getAds = async (page = 1) => {
     const adsPerPage = 10;
@@ -322,6 +322,4 @@ function Main() {
       <Notification />
     </Container>
   );
-}
-
-export default Main;
+};
