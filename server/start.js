@@ -7,36 +7,32 @@ const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`Listening on port ${port}`)); //Line 6
 
 app.get("/get_data", (req, res) => {
-  //Если страница обновляется, придется заново обрабатывать объявления, но дублироваться в completedList они в итоге не будут.
-  // Можно решить здесь, а можно и через cookies/localStorage(я решать не стал =) )
   const page = parseInt(req.query.page);
   const limit = parseInt(req.query.limit);
+  //Читаем файл выполненных задач и сравниваем его с текущими. Возвращаем разницу выполненных\невыполненных.
+  // => начальный индекс всегда 0
+  const startIndex = 0;
+  const endIndex = limit;
 
-  const startIndex = (page - 1) * limit;
-  const endIndex = page * limit;
   fs.readFile("data/dataList.json", "utf8", (err, data) => {
     const checkedAdList = JSON.parse(
       fs.readFileSync("data/completedList.json", "utf8")
     );
-    const adList = JSON.parse(data);
+    const checkedAdsIds = new Set(checkedAdList.map((el) => el.id));
+    const rawAdList = JSON.parse(data);
+
+    const readyAdList = rawAdList.filter((el) => !checkedAdsIds.has(el.id));
     const results = {};
-    //Проверочка на длины массивов начальных и проверенных данных, если сравняются, вернем заглушку
-    if (checkedAdList.length < adList.length) {
-      if (endIndex < adList.length) {
+    //Проверка на то что задачи еще имеются
+    if (readyAdList.length !== 0) {
+      if (endIndex < readyAdList.length) {
         results.next = {
           page: page + 1,
           limit: limit,
         };
       } else results.next = false;
-
-      if (startIndex > 0) {
-        results.previous = {
-          page: page - 1,
-          limit: limit,
-        };
-      }
       results.allAdsCompleted = false;
-      results.body = adList.slice(startIndex, endIndex);
+      results.body = readyAdList.slice(startIndex, endIndex);
     } else {
       results.body = [];
       results.allAdsCompleted = true;

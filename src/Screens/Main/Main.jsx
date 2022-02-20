@@ -176,7 +176,7 @@ function Main() {
       case "readyToSend":
         toast.info("Ads are ready to send!", {
           position: toast.POSITION.BOTTOM_RIGHT,
-          autoClose: 1500,
+          autoClose: 1900,
           hideProgressBar: true,
           toastId: "ready-to-send-ads",
         });
@@ -184,7 +184,7 @@ function Main() {
       case "notReadyToSend":
         toast.warn("Not all ads have been verified", {
           position: toast.POSITION.BOTTOM_RIGHT,
-          autoClose: 1500,
+          autoClose: 1900,
           hideProgressBar: true,
           toastId: "not-ready-to-send-ads",
         });
@@ -192,7 +192,7 @@ function Main() {
       case "adsAreSent":
         toast.success("Ads have been successfully sent!", {
           position: toast.POSITION.BOTTOM_RIGHT,
-          autoClose: 1500,
+          autoClose: 1900,
           hideProgressBar: true,
           toastId: "successfully-sent-ads",
         });

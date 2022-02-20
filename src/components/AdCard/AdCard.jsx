@@ -65,11 +65,20 @@ export const AdCard = ({
   //Autofocus
   const itemsRef = useRef([]);
   useEffect(() => {
-    itemsRef.current[state.selectedAdIndex].scrollIntoView({
+    const element =
+      itemsRef.current[state.selectedAdIndex].getBoundingClientRect();
+
+    window.scrollTo({
+      top:
+        element.height < window.innerHeight
+          ? element.top +
+            window.scrollY -
+            (window.innerHeight - element.height) / 3
+          : element.top + window.scrollY,
       behavior: "smooth",
-      block: "start",
     });
   }, [state.selectedAdIndex]);
+
   //------------------------------------------------------------------------------
   //Выбор элемента по клику
   const handleSelectAd = (index) => {
