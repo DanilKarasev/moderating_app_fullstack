@@ -203,6 +203,7 @@ function Main() {
   //Modals
   const [comment, setComment] = useState("");
   const handleChangeComment = (event) => {
+    if (/^\s/.test(event.target.value)) event.target.value = "";
     setComment(event.target.value);
   };
   //------------------------------------------------------------------------
@@ -212,12 +213,14 @@ function Main() {
     setDeclineModalIsOpen(true);
   };
   const handleCloseDeclineModal = () => {
+    setComment("");
     setDeclineModalIsOpen(false);
   };
 
   const declineAd = (e) => {
     e.preventDefault();
-    dispatch({ type: "declineAd", payload: comment });
+    handleCloseDeclineModal();
+    dispatch({ type: "declineAd", payload: comment.trim() });
     setComment("");
     dispatch({
       type: "selectAd",
@@ -226,7 +229,6 @@ function Main() {
           ? state.adsList.length - 1
           : state.selectedAdIndex + 1,
     });
-    handleCloseDeclineModal();
   };
   //Модалка для "Эскалировать"-------------------------------------------------
   const [escalateModalIsOpen, setEscalateModalIsOpen] = useState(false);
@@ -234,12 +236,14 @@ function Main() {
     setEscalateModalIsOpen(true);
   };
   const handleCloseEscalateModal = () => {
+    setComment("");
     setEscalateModalIsOpen(false);
   };
 
   const escalateAd = (e) => {
     e.preventDefault();
-    dispatch({ type: "escalateAd", payload: comment });
+    handleCloseEscalateModal();
+    dispatch({ type: "escalateAd", payload: comment.trim() });
     setComment("");
     dispatch({
       type: "selectAd",
@@ -248,7 +252,6 @@ function Main() {
           ? state.adsList.length - 1
           : state.selectedAdIndex + 1,
     });
-    handleCloseEscalateModal();
   };
 
   return (
@@ -257,6 +260,8 @@ function Main() {
         open={declineModalIsOpen}
         close={handleCloseDeclineModal}
         action={declineAd}
+        commandText={"Отклонить"}
+        color={"#F7882E"}
         handleChangeComment={handleChangeComment}
         inputValue={comment}
       />
@@ -264,6 +269,8 @@ function Main() {
         open={escalateModalIsOpen}
         close={handleCloseEscalateModal}
         action={escalateAd}
+        commandText={"Эскалация"}
+        color={"#1764CC"}
         handleChangeComment={handleChangeComment}
         inputValue={comment}
       />
