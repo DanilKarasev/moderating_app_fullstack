@@ -12,6 +12,8 @@ export const ModalComponent = ({
   action,
   handleChangeComment,
   inputValue,
+  commandText,
+  color,
 }) => {
   const modalStyle = {
     content: {
@@ -78,14 +80,21 @@ export const ModalComponent = ({
     <Modal isOpen={open} onRequestClose={close} style={modalStyle}>
       <h4
         css={css`
-          margin-bottom: 20px;
+          color: ${color};
+        `}
+      >
+        {commandText}
+      </h4>
+      <p
+        css={css`
+          margin: 12px 0 8px 0;
         `}
       >
         Пожалуйста, оставьте комментарий
-      </h4>
+      </p>
       <form onSubmit={action}>
         <ModalInput
-          required
+          required={commandText === "Отклонить"}
           maxLength={60}
           type="text"
           onChange={handleChangeComment}
