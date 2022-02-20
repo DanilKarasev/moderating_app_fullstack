@@ -52,6 +52,23 @@ export const AdCard = ({
       event.preventDefault();
       sendData();
     }
+    if (event.code === "ArrowDown") {
+      event.preventDefault();
+      dispatch({
+        type: "selectAd",
+        payload:
+          state.selectedAdIndex === state.adsList.length - 1
+            ? state.adsList.length - 1
+            : state.selectedAdIndex + 1,
+      });
+    }
+    if (event.code === "ArrowUp") {
+      event.preventDefault();
+      dispatch({
+        type: "selectAd",
+        payload: state.selectedAdIndex === 0 ? 0 : state.selectedAdIndex - 1,
+      });
+    }
   };
   useEffect(() => {
     if (!modalIsOpen) {
