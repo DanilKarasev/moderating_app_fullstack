@@ -67,18 +67,17 @@ export const AdCard = ({
   useEffect(() => {
     const element =
       itemsRef.current[state.selectedAdIndex].getBoundingClientRect();
-
+    //Если ширина экрана позволяет - выравниваем элемент по центру
     window.scrollTo({
       top:
         element.height < window.innerHeight
           ? element.top +
             window.scrollY -
-            (window.innerHeight - element.height) / 3
+            (window.innerHeight - element.height) / 2
           : element.top + window.scrollY,
       behavior: "smooth",
     });
   }, [state.selectedAdIndex]);
-
   //------------------------------------------------------------------------------
   //Выбор элемента по клику
   const handleSelectAd = (index) => {
