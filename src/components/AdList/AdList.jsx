@@ -1,6 +1,7 @@
 import { AdCard } from "../AdCard";
 import styled from "@emotion/styled";
 import { Loader } from "../Loader";
+import { FirstLoad } from "../FirstLoad";
 
 export const AdList = ({
   state,
@@ -9,6 +10,7 @@ export const AdList = ({
   escalateAd,
   declineAd,
   modalIsOpen,
+  loadData,
 }) => {
   const Wrapper = styled.div`
     align-items: center;
@@ -21,11 +23,7 @@ export const AdList = ({
     return <Loader />;
   }
   if (state.adsList.length === 0 && !state.allAdsCompleted) {
-    return (
-      <Wrapper>
-        <div>Press Enter to load ads...</div>
-      </Wrapper>
-    );
+    return <FirstLoad loadData={loadData} />;
   }
   if (state.allAdsCompleted) {
     return (
