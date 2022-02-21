@@ -125,9 +125,9 @@ export const Main = () => {
   //------------------------------------------------------------------------------------------
   //Загрузка данных
   const loadData = () => {
-    getAds(state.nextAdList.page).then((adsData) =>
-      dispatch({ type: "loadAdsList", payload: adsData })
-    );
+    getAds(state.nextAdList.page)
+      .then((adsData) => dispatch({ type: "loadAdsList", payload: adsData }))
+      .catch(() => toggleNotification("error"));
   };
   //Отправка данных
   const sendData = () => {
@@ -137,27 +137,10 @@ export const Main = () => {
       sendAds(state.checkedAds)
         .then(() => dispatch({ type: "dataIsSend" }))
         .then(() => toggleNotification("adsAreSent"))
-        .then(() => loadData());
+        .then(() => loadData())
+        .catch(() => toggleNotification("error"));
     }
   };
-  //------------------------------------------------------------------------------------------
-  //Первая загрузка, затем убираем обработчик на Enter, он больше не нужен и будет мешать
-  useEffect(() => {
-    const firstLoad = (event) => {
-      if (event.code === "Enter") {
-        event.preventDefault();
-        //На всякий случай условие
-        if (state.adsList.length === 0) {
-          loadData();
-        }
-        window.removeEventListener("keydown", firstLoad);
-      }
-    };
-    window.addEventListener("keydown", firstLoad);
-    return () => {
-      window.removeEventListener("keydown", firstLoad);
-    };
-  }, []);
   //------------------------------------------------------------------------------------------
   //Если длина массива задач === длине массива выполненных задач и не равно нулю - диспатчим экшен что все готово к отправке и уведомляем
   useEffect(() => {
@@ -195,6 +178,14 @@ export const Main = () => {
           autoClose: 1900,
           hideProgressBar: true,
           toastId: "successfully-sent-ads",
+        });
+        break;
+      case "error":
+        toast.error("Oops! Something went wrong...", {
+          position: toast.POSITION.BOTTOM_RIGHT,
+          autoClose: 1900,
+          hideProgressBar: true,
+          toastId: "notification-error",
         });
         break;
     }
@@ -276,6 +267,7 @@ export const Main = () => {
       />
       <CardWrapper>
         <AdList
+          loadData={loadData}
           sendData={sendData}
           dispatch={dispatch}
           state={state}
