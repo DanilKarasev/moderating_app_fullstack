@@ -11,6 +11,7 @@ export const AdList = ({
   declineAd,
   modalIsOpen,
   loadData,
+  approve,
 }) => {
   const Wrapper = styled.div`
     align-items: center;
@@ -36,6 +37,7 @@ export const AdList = ({
     <AdCard
       sendData={sendData}
       state={state}
+      approve={approve}
       dispatch={dispatch}
       escalateAd={escalateAd}
       declineAd={declineAd}

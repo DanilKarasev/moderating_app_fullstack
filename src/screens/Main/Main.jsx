@@ -1,6 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useCallback, useEffect, useReducer, useState } from "react";
 import { AdList } from "../../components/AdList";
 import { css, jsx } from "@emotion/react";
 import { Container, ControlPanel, CardWrapper } from "./StyledElements";
@@ -9,7 +9,7 @@ import { ModalComponent } from "../../components/Modal";
 import { ToastContainer as Notification, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-//Раз redux не желателен, попробуем useReducer)
+//Task was to avoid using react-redux, so I tried useReducer
 const initialState = {
   loading: false,
   allAdsCompleted: false,
@@ -31,7 +31,7 @@ function reducer(state, action) {
         allAdsCompleted: action.payload.allAdsCompleted,
       };
     case "selectAd":
-      //Выбор элемента по клику в компоненте AdCard
+      //Choosing element onclick in AdCard component
       return {
         ...state,
         selectedAd: state.adsList.find(
@@ -46,7 +46,7 @@ function reducer(state, action) {
           ...state.checkedAds.filter((el) => el.id !== state.selectedAd.id),
           { result: "Approved", reason: "", ...state.selectedAd },
         ],
-        //Ограничиваем счетчик до максимальной длины массива
+        //Limiting the counter to max array length
         selectedAdIndex:
           state.selectedAdIndex < state.adsList.length - 1
             ? state.selectedAdIndex + 1
@@ -123,13 +123,13 @@ export const Main = () => {
     }
   };
   //------------------------------------------------------------------------------------------
-  //Загрузка данных
+  //Data loading
   const loadData = () => {
     getAds(state.nextAdList.page)
       .then((adsData) => dispatch({ type: "loadAdsList", payload: adsData }))
       .catch(() => toggleNotification("error"));
   };
-  //Отправка данных
+  //Data sending
   const sendData = () => {
     if (!state.readyToSend) {
       toggleNotification("notReadyToSend");
@@ -142,7 +142,7 @@ export const Main = () => {
     }
   };
   //------------------------------------------------------------------------------------------
-  //Если длина массива задач === длине массива выполненных задач и не равно нулю - диспатчим экшен что все готово к отправке и уведомляем
+  //If tasks array length === completed tasks array length and not equals zero - dispatching action that data is ready to send and popping notification
   useEffect(() => {
     if (
       state.adsList.length === state.checkedAds.length &&
@@ -198,11 +198,15 @@ export const Main = () => {
     setComment(event.target.value);
   };
   //------------------------------------------------------------------------
-  //Модалка для "Отклонить"-------------------------------------------------
+  //Modal to "Decline"-------------------------------------------------
   const [declineModalIsOpen, setDeclineModalIsOpen] = useState(false);
   const handleOpenDeclineModal = () => {
     setDeclineModalIsOpen(true);
   };
+  const decline = useCallback(() => {
+    setDeclineModalIsOpen(true);
+  }, []);
+
   const handleCloseDeclineModal = () => {
     setComment("");
     setDeclineModalIsOpen(false);
@@ -221,7 +225,7 @@ export const Main = () => {
           : state.selectedAdIndex + 1,
     });
   };
-  //Модалка для "Эскалировать"-------------------------------------------------
+  //Modal to "Escalate"-------------------------------------------------
   const [escalateModalIsOpen, setEscalateModalIsOpen] = useState(false);
   const handleOpenEscalateModal = () => {
     setEscalateModalIsOpen(true);
@@ -251,7 +255,8 @@ export const Main = () => {
         open={declineModalIsOpen}
         close={handleCloseDeclineModal}
         action={declineAd}
-        commandText={"Отклонить"}
+        commentRequired={true}
+        commandText={"Decline"}
         color={"#F7882E"}
         handleChangeComment={handleChangeComment}
         inputValue={comment}
@@ -260,7 +265,8 @@ export const Main = () => {
         open={escalateModalIsOpen}
         close={handleCloseEscalateModal}
         action={escalateAd}
-        commandText={"Эскалация"}
+        commentRequired={false}
+        commandText={"Escalate"}
         color={"#1764CC"}
         handleChangeComment={handleChangeComment}
         inputValue={comment}
@@ -272,7 +278,7 @@ export const Main = () => {
           dispatch={dispatch}
           state={state}
           escalateAd={handleOpenEscalateModal}
-          declineAd={handleOpenDeclineModal}
+          declineAd={decline}
           modalIsOpen={declineModalIsOpen || escalateModalIsOpen}
         />
       </CardWrapper>
@@ -285,26 +291,26 @@ export const Main = () => {
           <ControlButton
             action={"approveAd"}
             dispatch={dispatch}
-            commandText={"Одобрить"}
+            commandText={"Approve"}
             color={"#88BD35"}
-            hotKey={"Пробел"}
+            hotKey={"Space"}
             state={state}
           />
           <ControlButton
             command={handleOpenDeclineModal}
-            commandText={"Отклонить"}
+            commandText={"Decline"}
             color={"#F7882E"}
             hotKey={"Del"}
           />
           <ControlButton
             command={handleOpenEscalateModal}
-            commandText={"Эскалация"}
+            commandText={"Escalate"}
             color={"#1764CC"}
             hotKey={"Shift+Enter"}
           />
           <ControlButton
             command={sendData}
-            commandText={"Сохранить"}
+            commandText={"Save"}
             color={"transparent"}
             hotKey={"F7"}
             disabled={!state.readyToSend}

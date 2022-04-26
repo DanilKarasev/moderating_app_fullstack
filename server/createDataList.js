@@ -18,7 +18,7 @@ for (let i = 0; i < addsQuantity; i++) {
     )},${fakeDateString[1].slice(0, 6)}`,
     ownerId: i + +(Math.random() * 37653).toFixed(0),
     ownerLogin: faker.name.findName(),
-    bulletinSubject: `Объявление №${i + 1} ${faker.lorem.words(3)}`,
+    bulletinSubject: `Add №${i + 1} ${faker.lorem.words(3)}`,
     bulletinText: `<p>${faker.lorem.paragraphs(
       Math.random() * 2
     )}</p><ul><li>${faker.lorem.lines(1)}</li><li>${faker.lorem.lines(
@@ -32,5 +32,5 @@ for (let i = 0; i < addsQuantity; i++) {
   });
 }
 fs.writeFile("data/dataList.json", JSON.stringify(adds), () => {
-  console.log(`Создано ${adds.length} объявлений`);
+  console.log(`${adds.length} adds was created`);
 });

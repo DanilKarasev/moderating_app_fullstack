@@ -22,6 +22,8 @@ export const AdCard = ({
   escalateAd,
   modalIsOpen,
 }) => {
+  console.log(declineAd);
+  console.log(modalIsOpen);
   //Добавляем первый элемент в стейт при mount'e
   useEffect(() => {
     dispatch({ type: "selectAd", payload: 0 });
@@ -84,7 +86,7 @@ export const AdCard = ({
   useEffect(() => {
     const element =
       itemsRef.current[state.selectedAdIndex].getBoundingClientRect();
-    //Если ширина экрана позволяет - выравниваем элемент по центру
+    //If screen width is ok, then centering the element
     window.scrollTo({
       top:
         element.height < window.innerHeight
@@ -96,7 +98,7 @@ export const AdCard = ({
     });
   }, [state.selectedAdIndex]);
   //------------------------------------------------------------------------------
-  //Выбор элемента по клику
+  //Choosing element on click
   const handleSelectAd = (index) => {
     return () => {
       dispatch({ type: "selectAd", payload: index });

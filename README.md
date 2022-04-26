@@ -1,69 +1,76 @@
-# Тестовое задания для портала vl.ru
-Данное приложение имитирует интерфейс модерации объявлений пользователей. 
+# Moderating adds application
+Presented app is an interface of moderating adds created by users. Adds being loaded by 10 pcs. To load a new list of ads, you have to make a decision of all 10's. 
 
-## Менеджмент каталога объявлений:
-Заходим в директорию `/server`. 
+# Technical requirements
+- Avoid react - redux
+- Use hotkeys to each action
+- Load adds by batches, 10 pcs each
+- Action "Decline" should have commentary, "Escalate" can have one
+- Any decision can be changed, before sent to server
+- Small backend app on Node, main part is frontend
 
-В `createDataList.js` находится функция, создающая объявления. \
-Количество объявлений по умолчанию:  `50`. \
-Чтобы изменить количество объявлений, необходимо изменить значение `addsQuantity` на желаемое. 
+## Managing adds catalog:
+Go in `/server` directory. 
 
-Для создания каталога объявлений запускаем команду:
+In `createDataList.js` you can find a function that makes adds. \
+Default adds quantity:  `50`. \
+To change adds quantity, you should change`addsQuantity` to whatever number you want. 
+
+To create catalog of adds run next command:
 ### `node createDataList`
 
 \
-Проверенные объявления записываются в `data/completedList.json` \
-По умолчанию в `completedList.json` должен находиться `ПУСТОЙ МАССИВ`
+Checked adds writes to `data/completedList.json` \
+By default in `completedList.json` should be an `EMPTY ARRAY`
 
-Если элементы в `completedList.json` совпадают с элементами в `dataList.json` по id, то данные загружаться не будут, имитируя полностью выполненную задачу.
+If elements in `completedList.json` equals to elements in `dataList.json` by id, then data will not be loaded, because all tasks are checked.
 
-Чтобы вновь восстановить функционал приложения просто оставьте в `completedList.json` пустой массив.
+To restore apps functionality just leave in `completedList.json` an empty array.
 
 
-## Запуск локального сервера:
+## Starting local host:
 
-Чтобы запустить локальный сервер, необходимо из директории `/server` выполнить команду:
+Go into `/server` directory and run:
 
 ### `node start`
 
-По умолчанию запускается на http://localhost:8080 \
-Если требуется изменить порт, отредактируйте параметр `"proxy"` в `package.json`
+By default, localhost runs at http://localhost:8080 \
+If you want to change port, just edit `"proxy"` parameter in `package.json`
 
-## Доступные команды в приложении:
+## Available app commands:
 
-В корневой папке проекта доступны следующие команды: 
+In root directory you can run following commands: 
 
 ### `npm i`
 
-Установка пакетов зависимостей.
+Installing depending packages.
 
 ### `npm start`
 
-Запуск приложения в режиме разработки. \
-По умолчанию открывается на http://localhost:3000
+Runs app in dev mode \
 
 ### `npm run build`
 
-Создает оптимизированную сборку приложения для дальнейшего деплоя.
+Making optimized build to deploy.
 
-## Дополнительно установленные библиотеки:
+## Libraries used in app:
 
 ### `faker`
 
-Библиотека для создания фейковых данных. Используется в `createDataList.js` 
+Used in `createDataList.js` to make some fake data. 
 
 ### `body-parser`
 
-Миддлвара для Node.js. 
+Middleware for Node.js 
 
 ### `@emotion`
 
-Библиотека для написания стилей на js.
+Library for writing styles on js.
 
 ### `react-modal`
 
-Небольшая библиотека с встроенной логикой модальных окон.
+Small library with build-in logic of modals.
 
 ### `react-toastify`
 
-Отличная библиотека для всплывающих уведомлений. Не нужно заморачиваться чисткой таймаутов и прочими рутинными вещами :)
+Notification library.

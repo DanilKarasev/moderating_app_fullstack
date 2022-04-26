@@ -13,7 +13,6 @@ export const ControlButton = ({
   state,
   disabled,
 }) => {
-  //Если в пропсах есть command(функция), то по клику сразу выполняем ее, иначе переходим к handleClick
   const handleClick = () => {
     dispatch({ type: action });
     dispatch({
@@ -52,6 +51,7 @@ export const ControlButton = ({
         }
       `}
       disabled={!!disabled}
+      //If there is a command in props, then by click running it immediately, otherwise, runs HandleClick
       onClick={command ? command : () => handleClick()}
     >
       <p

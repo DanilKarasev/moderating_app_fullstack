@@ -10,6 +10,7 @@ export const ModalComponent = ({
   open,
   close,
   action,
+  commentRequired,
   handleChangeComment,
   inputValue,
   commandText,
@@ -90,7 +91,7 @@ export const ModalComponent = ({
           margin: 12px 0 8px 0;
         `}
       >
-        Пожалуйста, оставьте комментарий
+        Please, leave a comment
       </p>
       <form onSubmit={action}>
         <ModalInput
@@ -112,7 +113,12 @@ export const ModalComponent = ({
           <ModalButton type={"button"} close onClick={close}>
             Close
           </ModalButton>
-          <ModalButton type={"submit"}>Add</ModalButton>
+          <ModalButton
+            disabled={commentRequired && !inputValue}
+            type={"submit"}
+          >
+            Add
+          </ModalButton>
         </div>
       </form>
     </Modal>

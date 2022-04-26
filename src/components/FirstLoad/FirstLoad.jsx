@@ -8,7 +8,7 @@ export const FirstLoad = ({ loadData }) => {
     display: flex;
     flex-direction: column;
   `;
-  //Первая загрузка, при размонтировании компонента обработчик удалится
+  //First loading, when component unmounts - event listener will be removed
   useEffect(() => {
     const firstLoad = (event) => {
       if (event.code === "Enter") {

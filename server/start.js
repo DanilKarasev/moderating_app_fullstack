@@ -9,8 +9,8 @@ app.listen(port, () => console.log(`Listening on port ${port}`)); //Line 6
 app.get("/get_data", (req, res) => {
   const page = parseInt(req.query.page);
   const limit = parseInt(req.query.limit);
-  //Читаем файл выполненных задач и сравниваем его с текущими. Возвращаем разницу выполненных\невыполненных.
-  // => начальный индекс всегда 0
+  //Reading completed tasks file and comparing it with currents. Returning difference of completed\uncompleted.
+  // => start index is always 0
   const startIndex = 0;
   const endIndex = limit;
 
@@ -23,7 +23,7 @@ app.get("/get_data", (req, res) => {
 
     const readyAdList = rawAdList.filter((el) => !checkedAdsIds.has(el.id));
     const results = {};
-    //Проверка на то что задачи еще имеются
+    //Checking that tasks still exist
     if (readyAdList.length !== 0) {
       if (endIndex < readyAdList.length) {
         results.next = {
@@ -47,9 +47,9 @@ app.post("/send_data", jsonParser, (req, res) => {
   fs.readFile("data/completedList.json", "utf8", (err, data) => {
     const checkedAds = JSON.parse(data);
     const newCheckedAds = req.body;
-    //Создаем коллекцию существующих id
+    //Making a collection of existing ids
     const ids = new Set(checkedAds.map((el) => el.id));
-    //Убираем дубликаты
+    //Removing duplicates
     const uniqueCheckedAds = [
       ...checkedAds,
       ...newCheckedAds.filter((d) => !ids.has(d.id)),
