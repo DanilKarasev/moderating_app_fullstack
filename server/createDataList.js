@@ -1,11 +1,11 @@
 const fs = require("fs");
 const { faker } = require("@faker-js/faker");
 
-const addsQuantity = 50;
+const adsQuantity = 50;
 
 const adds = [];
 
-for (let i = 0; i < addsQuantity; i++) {
+for (let i = 0; i < adsQuantity; i++) {
   const fakeDate = faker.date.recent(20);
   const fakeDateString = fakeDate.toLocaleString().split(",");
 

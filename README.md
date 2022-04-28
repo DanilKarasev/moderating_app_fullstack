@@ -1,26 +1,26 @@
-# Moderating adds application
-Presented app is an interface of moderating adds created by users. Adds being loaded by 10 pcs. To load a new list of ads, you have to make a decision of all 10's. 
+# Moderating ads application
+Presented app is an interface of moderating ads created by users. Ads being loaded by 10 pcs. To load a new list of ads, you have to make a decision of all 10's.
 
 # Technical requirements
 - Avoid react - redux
-- Use hotkeys to each action
-- Load adds by batches, 10 pcs each
+- Use hotkeys for each action
+- Load ads by batches, 10 pcs each
 - Action "Decline" should have commentary, "Escalate" can have one
-- Any decision can be changed, before sent to server
-- Small backend app on Node, main part is frontend
+- Any decision can be changed before being sent to the server
+- Small backend app on Node, the main part is frontend
 
-## Managing adds catalog:
-Go in `/server` directory. 
+## Managing ads catalog:
+Go in `/server` directory.
 
-In `createDataList.js` you can find a function that makes adds. \
-Default adds quantity:  `50`. \
-To change adds quantity, you should change`addsQuantity` to whatever number you want. 
+In `createDataList.js` you can find a function that makes ads. \
+Default ads quantity:  `50`. \
+To change ads quantity, you should change`adsQuantity` to whatever number you want.
 
-To create catalog of adds run next command:
+To create catalog of ads run next command:
 ### `node createDataList`
 
 \
-Checked adds writes to `data/completedList.json` \
+Checked ads writes to `data/completedList.json` \
 By default in `completedList.json` should be an `EMPTY ARRAY`
 
 If elements in `completedList.json` equals to elements in `dataList.json` by id, then data will not be loaded, because all tasks are checked.
@@ -39,7 +39,7 @@ If you want to change port, just edit `"proxy"` parameter in `package.json`
 
 ## Available app commands:
 
-In root directory you can run following commands: 
+In root directory you can run following commands:
 
 ### `npm i`
 
@@ -57,11 +57,11 @@ Making optimized build to deploy.
 
 ### `faker`
 
-Used in `createDataList.js` to make some fake data. 
+Used in `createDataList.js` to make some fake data.
 
 ### `body-parser`
 
-Middleware for Node.js 
+Middleware for Node.js
 
 ### `@emotion`
 
