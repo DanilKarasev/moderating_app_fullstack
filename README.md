@@ -25,7 +25,7 @@ By default in `completedList.json` should be an `EMPTY ARRAY`
 
 If elements in `completedList.json` equals to elements in `dataList.json` by id, then data will not be loaded, because all tasks are checked.
 
-To restore app functionality just press `Clear All` button after checking all ads.
+To restore app functionality just press `Clear All` button after checking all ads. 
 
 
 ## Starting local host:
