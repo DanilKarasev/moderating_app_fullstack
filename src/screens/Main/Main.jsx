@@ -122,6 +122,19 @@ export const Main = () => {
       throw Error(response.statusText);
     }
   };
+
+  //Clear completed ads
+  const clearAds = async () => {
+    let response = await fetch("/clear_data", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/JSON",
+      },
+    });
+    if (response.status !== 200) {
+      throw Error(response.statusText);
+    }
+  };
   //------------------------------------------------------------------------------------------
   //Data loading
   const loadData = () => {
@@ -140,6 +153,12 @@ export const Main = () => {
         .then(() => loadData())
         .catch(() => toggleNotification("error"));
     }
+  };
+  //Completed ads clearing
+  const clearData = () => {
+    clearAds()
+      .then(() => toggleNotification("adsAreCleared"))
+      .catch(() => toggleNotification("error"));
   };
   //------------------------------------------------------------------------------------------
   //If tasks array length === completed tasks array length and not equals zero - dispatching action that data is ready to send and popping notification
@@ -179,6 +198,17 @@ export const Main = () => {
           hideProgressBar: true,
           toastId: "successfully-sent-ads",
         });
+        break;
+      case "adsAreCleared":
+        toast.success(
+          "Ads have been successfully cleared, please refresh the page.",
+          {
+            position: toast.POSITION.BOTTOM_RIGHT,
+            autoClose: 1900,
+            hideProgressBar: true,
+            toastId: "successfully-cleared-ads",
+          }
+        );
         break;
       case "error":
         toast.error("Oops! Something went wrong...", {
@@ -314,6 +344,13 @@ export const Main = () => {
             color={"transparent"}
             hotKey={"F7"}
             disabled={!state.readyToSend}
+          />
+          <ControlButton
+            command={clearData}
+            commandText={"Clear All"}
+            color={"red"}
+            hotKey={"(Restart the app)"}
+            disabled={!state.allAdsCompleted}
           />
         </div>
       </ControlPanel>

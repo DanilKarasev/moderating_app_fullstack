@@ -66,3 +66,12 @@ app.post("/send_data", jsonParser, (req, res) => {
     );
   });
 });
+
+app.put("/clear_data", jsonParser, (req, res) => {
+  fs.writeFile("data/completedList.json", "[]", (err) => {
+    if (err) {
+      console.log(err.message);
+    } else console.log("Data cleared!");
+    res.end();
+  });
+});
