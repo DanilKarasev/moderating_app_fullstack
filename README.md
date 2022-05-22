@@ -1,5 +1,6 @@
 # Moderating ads application
 Presented app is an interface of moderating ads created by users. Ads being loaded by 10 pcs. To load a new list of ads, you have to make a decision of all 10's.
+This is fullstack application. Demo page located at `https://moderating-app-frontend.vercel.app/`. Server located at `https://moderating-app-backend.herokuapp.com/`.
 
 # Technical requirements
 - Avoid react - redux
