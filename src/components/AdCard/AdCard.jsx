@@ -22,9 +22,7 @@ export const AdCard = ({
   escalateAd,
   modalIsOpen,
 }) => {
-  console.log(declineAd);
-  console.log(modalIsOpen);
-  //Добавляем первый элемент в стейт при mount'e
+  //Adding first element to state on mount
   useEffect(() => {
     dispatch({ type: "selectAd", payload: 0 });
   }, [state.adsList]);

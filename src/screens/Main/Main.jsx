@@ -325,18 +325,21 @@ export const Main = () => {
             color={"#88BD35"}
             hotKey={"Space"}
             state={state}
+            disabled={state.adsList.length === 0}
           />
           <ControlButton
             command={handleOpenDeclineModal}
             commandText={"Decline"}
             color={"#F7882E"}
             hotKey={"Del"}
+            disabled={state.adsList.length === 0}
           />
           <ControlButton
             command={handleOpenEscalateModal}
             commandText={"Escalate"}
             color={"#1764CC"}
             hotKey={"Shift+Enter"}
+            disabled={state.adsList.length === 0}
           />
           <ControlButton
             command={sendData}
